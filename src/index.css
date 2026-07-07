@@ -1,0 +1,113 @@
+:root {
+  --color-fondo: #ffffff;
+  --color-texto: #1a1a1a;
+  --color-primario: #2563eb;
+  --color-primario-texto: #ffffff;
+  --color-borde: #d1d5db;
+  --color-error: #dc2626;
+  --color-exito: #16a34a;
+  --color-superficie: #f3f4f6;
+}
+
+[data-theme="oscuro"] {
+  --color-fondo: #111827;
+  --color-texto: #f3f4f6;
+  --color-primario: #3b82f6;
+  --color-primario-texto: #ffffff;
+  --color-borde: #374151;
+  --color-error: #f87171;
+  --color-exito: #4ade80;
+  --color-superficie: #1f2937;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: system-ui, -apple-system, sans-serif;
+  background-color: var(--color-fondo);
+  color: var(--color-texto);
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+#root {
+  max-width: 480px;
+  margin: 0 auto;
+  padding: 24px 16px;
+}
+
+h1, h2, h3 {
+  color: var(--color-texto);
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 24px;
+  padding: 16px;
+  border: 1px solid var(--color-borde);
+  border-radius: 8px;
+  background-color: var(--color-superficie);
+}
+
+label {
+  font-size: 14px;
+  font-weight: 600;
+}
+
+input, select {
+  padding: 8px;
+  border: 1px solid var(--color-borde);
+  border-radius: 4px;
+  background-color: var(--color-fondo);
+  color: var(--color-texto);
+  font-size: 14px;
+}
+
+button {
+  padding: 10px 16px;
+  border: none;
+  border-radius: 4px;
+  background-color: var(--color-primario);
+  color: var(--color-primario-texto);
+  font-weight: 600;
+  cursor: pointer;
+}
+
+button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+button[type="button"] {
+  background-color: transparent;
+  color: var(--color-primario);
+  border: 1px solid var(--color-primario);
+}
+
+header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+}
+
+ul {
+  list-style: none;
+  padding: 0;
+}
+
+li {
+  padding: 12px;
+  border-bottom: 1px solid var(--color-borde);
+  font-size: 14px;
+}
+
+p[role="alert"] {
+  color: var(--color-error);
+  font-size: 14px;
+  margin: 4px 0;
+}
