@@ -7,6 +7,7 @@ import { TransferForm } from "../components/dashboard/TransferForm";
 import { DepositWithdrawForm } from "../components/dashboard/DepositWithdrawForm";
 import { TransactionHistory } from "../components/dashboard/TransactionHistory";
 import { cerrarSesion } from "../services/authService";
+import logo from "../assets/logo.png";
 
 export function DashboardPage() {
   const { user } = useAuth();
@@ -20,7 +21,7 @@ export function DashboardPage() {
   return (
     <div>
       <header>
-        <h1>XBank</h1>
+        <img src={logo} alt="XBank" style={{ height: "36px" }} />
         <div>
           <button type="button" onClick={alternarTema}>
             {tema === "claro" ? "🌙 Oscuro" : "☀️ Claro"}
