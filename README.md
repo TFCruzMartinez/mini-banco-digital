@@ -15,24 +15,6 @@ Prototipo de banca digital construido con React + Firebase. Permite iniciar sesi
 
 ## Instalacion y ejecucion local
 
-1. Clonar el
-# XBank — Mini Banco Digital
-
-Prototipo de banca digital construido con React + Firebase. Permite iniciar sesion, ver saldo en tiempo real, transferir dinero entre usuarios y revisar el historial de movimientos, todo sincronizado con Firestore sin necesidad de refrescar la pagina.
-
-## Stack
-
-- React 18 (Vite)
-- Firebase Authentication (Email/Password)
-- Cloud Firestore (con suscripciones en tiempo real via onSnapshot)
-
-## Requisitos previos
-
-- Node.js 18 o superior
-- Una cuenta de Firebase (gratuita, plan Spark es suficiente)
-
-## Instalacion y ejecucion local
-
 1. Clonar el repositorio:
    git clone URL_DEL_REPO
    cd mini-banco-digital
@@ -72,9 +54,10 @@ src/
   hooks/
     useSaldo.js       Suscripcion en tiempo real al saldo del usuario
     useMovimientos.js Suscripcion en tiempo real al historial
+    useTheme.js       Modo oscuro persistente con localStorage
   components/
     auth/          LoginForm, RegisterForm
-    dashboard/     BalanceCard, TransferForm, TransactionHistory
+    dashboard/     BalanceCard, TransferForm, DepositWithdrawForm, TransactionHistory
   pages/
     LoginPage.jsx
     DashboardPage.jsx
@@ -100,6 +83,13 @@ El historial de un usuario se arma combinando dos consultas (movimientos donde e
 
 Las transferencias usan runTransaction de Firestore en vez de dos escrituras separadas (restar al emisor, sumar al receptor). Esto garantiza que la operacion se aplique completa o no se aplique en absoluto, evitando estados inconsistentes si falla a mitad de camino, y evitando condiciones de carrera si dos transferencias ocurren en paralelo sobre la misma cuenta.
 
+## Funcionalidades opcionales implementadas
+
+- useReducer + useContext para el estado global de sesion (AuthContext)
+- Filtro de historial por tipo (todos, enviados, recibidos)
+- Deposito y retiro simulado, con las mismas validaciones que las transferencias
+- Modo oscuro persistente (localStorage), aplicado mediante variables CSS
+
 ## Reglas de seguridad de Firestore
 
 Las reglas (ver firestore.rules) restringen:
@@ -120,4 +110,10 @@ La solucion robusta a este problema seria mover la logica de transferencia a una
 
 - El archivo .env con las credenciales de Firebase no se incluye en el repositorio (ver .gitignore). Usa .env.example como plantilla.
 - La apiKey de Firebase para proyectos web no es un secreto critico en si misma (queda igualmente visible en el bundle del navegador); la proteccion real de los datos la dan las Firestore Security Rules descritas arriba.
+
+## Uso de IA en el desarrollo
+
+Este proyecto se desarrollo con apoyo de Claude (Anthropic) como asistente de programacion durante todo el proceso: definicion de arquitectura (separacion en services/context/hooks/components/pages), redaccion de codigo en cada capa, explicacion de conceptos de Firebase (transacciones atomicas, indices compuestos, security rules), y debugging de errores durante el desarrollo (configuracion de terminal, indices de Firestore, guardado de archivos).
+
+Cada archivo generado fue revisado, ejecutado y probado antes de aceptarlo, y las decisiones de arquitectura (por ejemplo, el uso de runTransaction para las transferencias, o useReducer para el estado de sesion) fueron explicadas paso a paso durante el desarrollo, por lo que puedo justificar el por que de cada una en la defensa.
 
