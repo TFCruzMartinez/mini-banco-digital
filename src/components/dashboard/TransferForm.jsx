@@ -88,7 +88,10 @@ export function TransferForm({ nombreEmisor, saldoDisponible }) {
     <form onSubmit={handleTransferSubmit}>
       <h3>Transferir dinero</h3>
 
-      <label htmlFor="transfer-email">Email del destinatario</label>
+      <label htmlFor="transfer-email">
+        Email del destinatario
+      </label>
+
       <input
         id="transfer-email"
         type="email"
@@ -97,7 +100,10 @@ export function TransferForm({ nombreEmisor, saldoDisponible }) {
         disabled={enviando}
       />
 
-      <label htmlFor="transfer-monto">Monto</label>
+      <label htmlFor="transfer-monto">
+        Monto
+      </label>
+
       <input
         id="transfer-monto"
         type="number"
@@ -107,8 +113,13 @@ export function TransferForm({ nombreEmisor, saldoDisponible }) {
         min="1"
       />
 
-      {errorMensaje && <p role="alert">{errorMensaje}</p>}
-      {exitoMensaje && <p>{exitoMensaje}</p>}
+      {errorMensaje && (
+        <p role="alert">{errorMensaje}</p>
+      )}
+
+      {exitoMensaje && (
+        <p>{exitoMensaje}</p>
+      )}
 
       <button type="submit" disabled={enviando}>
         {enviando ? "Procesando..." : "Transferir"}
