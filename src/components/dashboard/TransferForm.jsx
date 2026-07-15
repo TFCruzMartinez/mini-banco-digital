@@ -1,10 +1,15 @@
 // src/components/dashboard/TransferForm.jsx
 import { useState } from "react";
-import { buscarUsuarioPorEmail, transferirDinero } from "../../services/bankService";
+import {
+  buscarUsuarioPorEmail,
+  transferirDinero,
+} from "../../services/bankService";
 import { useAuth } from "../../context/AuthContext";
+import { validarTransferencia } from "../../utils/validaciones";
 
 export function TransferForm({ nombreEmisor, saldoDisponible }) {
   const { user } = useAuth();
+
   const [emailDestino, setEmailDestino] = useState("");
   const [monto, setMonto] = useState("");
   const [enviando, setEnviando] = useState(false);
@@ -21,34 +26,35 @@ export function TransferForm({ nombreEmisor, saldoDisponible }) {
 
   async function handleTransferSubmit(event) {
     event.preventDefault();
+
     setErrorMensaje("");
     setExitoMensaje("");
 
-    const montoNumerico = Number(monto);
+    const validacion = validarTransferencia({
+      emailDestino,
+      emailEmisor: user.email,
+      monto,
+      saldoDisponible,
+    });
 
-    // Validaciones previas (feedback inmediato, sin tocar Firestore)
-    if (!emailDestino.trim()) {
-      setErrorMensaje("Debes ingresar el email del destinatario");
-      return;
-    }
-    if (!monto || montoNumerico <= 0) {
-      setErrorMensaje("El monto debe ser mayor a 0");
-      return;
-    }
-    if (emailDestino.trim().toLowerCase() === user.email.toLowerCase()) {
-      setErrorMensaje("No puedes transferirte dinero a ti mismo");
-      return;
-    }
-    if (montoNumerico > saldoDisponible) {
-      setErrorMensaje("Saldo insuficiente");
+    if (!validacion.esValida) {
+      setErrorMensaje(validacion.mensaje);
       return;
     }
 
-    if (enviando) return;
+    if (enviando) {
+      return;
+    }
+
+    const {
+      emailDestino: emailLimpio,
+      montoNumerico,
+    } = validacion;
+
     setEnviando(true);
 
     try {
-      const destinatario = await buscarUsuarioPorEmail(emailDestino.trim());
+      const destinatario = await buscarUsuarioPorEmail(emailLimpio);
 
       if (!destinatario) {
         setErrorMensaje("No existe un usuario registrado con ese email");
@@ -63,11 +69,16 @@ export function TransferForm({ nombreEmisor, saldoDisponible }) {
         receptorNombre: destinatario.nombre,
       });
 
-      setExitoMensaje(`Transferiste $${montoNumerico.toLocaleString("es-CL")} a ${destinatario.nombre}`);
+      setExitoMensaje(
+        `Transferiste $${montoNumerico.toLocaleString("es-CL")} a ${destinatario.nombre}`,
+      );
+
       setEmailDestino("");
       setMonto("");
     } catch (error) {
-      setErrorMensaje(error.message || "No se pudo completar la transferencia");
+      setErrorMensaje(
+        error.message || "No se pudo completar la transferencia",
+      );
     } finally {
       setEnviando(false);
     }
