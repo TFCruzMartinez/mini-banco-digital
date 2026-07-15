@@ -18,41 +18,72 @@ export function TransactionHistory({ uid }) {
     return <p role="alert">Error al cargar el historial: {error}</p>;
   }
 
-  // Filtrado derivado del estado: no se guarda en su propio useState,
-  // se recalcula en cada render a partir de "movimientos" y "filtroTipo"
+  const movimientosOrdenados = [...movimientos].sort(
+    (movimientoA, movimientoB) =>
+      movimientoB.fecha.toDate().getTime() -
+      movimientoA.fecha.toDate().getTime(),
+  );
+
   const movimientosFiltrados =
     filtroTipo === "todos"
-      ? movimientos
-      : movimientos.filter((mov) => mov.tipo === filtroTipo);
+      ? movimientosOrdenados
+      : movimientosOrdenados.filter(
+          (movimiento) => movimiento.tipo === filtroTipo,
+        );
 
   return (
     <div>
       <h3>Historial de movimientos</h3>
 
       <label htmlFor="filtro-tipo">Filtrar por</label>
-      <select id="filtro-tipo" value={filtroTipo} onChange={handleFiltroChange}>
+
+      <select
+        id="filtro-tipo"
+        value={filtroTipo}
+        onChange={handleFiltroChange}
+      >
         <option value="todos">Todos</option>
         <option value="envio">Enviados</option>
         <option value="recepcion">Recibidos</option>
       </select>
 
-      {movimientos.length === 0 && <p>Aún no tienes movimientos</p>}
-
-      {movimientos.length > 0 && movimientosFiltrados.length === 0 && (
-        <p>No hay movimientos que coincidan con el filtro</p>
+      {movimientos.length === 0 && (
+        <p>Aún no tienes movimientos</p>
       )}
+
+      {movimientos.length > 0 &&
+        movimientosFiltrados.length === 0 && (
+          <p>No hay movimientos que coincidan con el filtro</p>
+        )}
 
       {movimientosFiltrados.length > 0 && (
         <ul>
-          {movimientosFiltrados.map((mov) => (
-            <li key={mov.id}>
-              <span>{mov.fecha.toDate().toLocaleString("es-CL")}</span>
+          {movimientosFiltrados.map((movimiento) => (
+            <li key={movimiento.id}>
+              <span>
+                {movimiento.fecha
+                  .toDate()
+                  .toLocaleString("es-CL")}
+              </span>
+
               {" — "}
-              <span>{mov.tipo === "envio" ? "Enviado a" : "Recibido de"} {mov.contraparte}</span>
+
+              <span>
+                {movimiento.tipo === "envio"
+                  ? "Enviado a"
+                  : "Recibido de"}{" "}
+                {movimiento.contraparte}
+              </span>
+
               {" — "}
+
               <strong>
-                {mov.tipo === "envio" ? "-" : "+"}
-                {mov.monto.toLocaleString("es-CL", { style: "currency", currency: "CLP" })}
+                {movimiento.tipo === "envio" ? "-" : "+"}
+
+                {movimiento.monto.toLocaleString("es-CL", {
+                  style: "currency",
+                  currency: "CLP",
+                })}
               </strong>
             </li>
           ))}
